@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operações Matemáticas</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 600px; margin: auto; }
+        h1, h2 { color: #333; }
+        .operation-section { margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background-color: #f9f9f9; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"] { width: calc(100% - 22px); padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        button { background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+        .result { margin-top: 15px; padding: 10px; background-color: #e9ecef; border-radius: 4px; border: 1px solid #ced4da; }
+        .error { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Operações Matemáticas</h1>
+
+        <div class="operation-section">
+            <h2>1. Somatório de um Intervalo</h2>
+            <label for="somatorioInicio">Início:</label>
+            <input type="text" id="somatorioInicio" placeholder="Ex: 1">
+            <label for="somatorioFim">Fim:</label>
+            <input type="text" id="somatorioFim" placeholder="Ex: 10">
+            <button onclick="calcularSomatorio()">Calcular Somatório</button>
+            <div id="resultadoSomatorio" class="result"></div>
+        </div>
+
+        <div class="operation-section">
+            <h2>2. Fatorial de um Número</h2>
+            <label for="fatorialNumero">Número:</label>
+            <input type="text" id="fatorialNumero" placeholder="Ex: 5">
+            <button onclick="calcularFatorial()">Calcular Fatorial</button>
+            <div id="resultadoFatorial" class="result"></div>
+        </div>
+
+        <div class="operation-section">
+            <h2>3. Média de uma Lista de Números</h2>
+            <label for="mediaNumeros">Números (separados por vírgula):</label>
+            <input type="text" id="mediaNumeros" placeholder="Ex: 1,2,3,4.5">
+            <button onclick="calcularMedia()">Calcular Média</button>
+            <div id="resultadoMedia" class="result"></div>
+        </div>
+
+        <div class="operation-section">
+            <h2>4. Verificar se um Número é Primo</h2>
+            <label for="primoNumero">Número:</label>
+            <input type="text" id="primoNumero" placeholder="Ex: 7">
+            <button onclick="verificarPrimo()">Verificar Primo</button>
+            <div id="resultadoPrimo" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://3003-i6vb51b54uvc5zc2m6lz9-c661bd33.manusvm.computer/operacoes';
+
+        async function fetchData(url, resultElementId) {
+            const resultElement = document.getElementById(resultElementId);
+            resultElement.innerHTML = 'Carregando...';
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.erro) {
+                    resultElement.innerHTML = `<span class="error">Erro: ${data.erro}</span>`;
+                } else if (data.resultado !== undefined) {
+                    resultElement.innerHTML = `Resultado: ${data.resultado}`;
+                } else {
+                    resultElement.innerHTML = JSON.stringify(data);
+                }
+            } catch (error) {
+                resultElement.innerHTML = `<span class="error">Erro na requisição: ${error.message}</span>`;
+                console.error('Erro:', error);
+            }
+        }
+
+        function calcularSomatorio() {
+            const inicio = document.getElementById('somatorioInicio').value;
+            const fim = document.getElementById('somatorioFim').value;
+            const url = `${BASE_URL}/somatorio?inicio=${inicio}&fim=${fim}`;
+            fetchData(url, 'resultadoSomatorio');
+        }
+
+        function calcularFatorial() {
+            const numero = document.getElementById('fatorialNumero').value;
+            const url = `${BASE_URL}/fatorial?numero=${numero}`;
+            fetchData(url, 'resultadoFatorial');
+        }
+
+        function calcularMedia() {
+            const numeros = document.getElementById('mediaNumeros').value;
+            const url = `${BASE_URL}/media?numeros=${numeros}`;
+            fetchData(url, 'resultadoMedia');
+        }
+
+        function verificarPrimo() {
+            const numero = document.getElementById('primoNumero').value;
+            const url = `${BASE_URL}/primo?numero=${numero}`;
+            fetchData(url, 'resultadoPrimo');
+        }
+    </script>
+</body>
+</html>
+
+
